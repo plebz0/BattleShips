@@ -6,10 +6,16 @@ using System.Threading.Tasks;
 
 namespace BattleShips
 {
-    internal class Program
+    internal class Program 
     {
+
         static void Main(string[] args)
         {
+            GameHandler GH = new GameHandler();
+            GH.RenderAttack();
+
+
+            Console.ReadKey();
         }
     }
 }
