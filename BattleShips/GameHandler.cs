@@ -29,8 +29,8 @@ namespace BattleShips
                 Console.Write(", ");
                 ActivePlayer.ships[i].RenderToUI();
             }
-
-
+            Console.WriteLine("");
+            ActivePlayer.bf.Render();
 
 
             turn++;

@@ -14,7 +14,7 @@ namespace BattleShips
             GameHandler GH = new GameHandler();
             GH.RenderAttack();
 
-
+            
             Console.ReadKey();
         }
     }
