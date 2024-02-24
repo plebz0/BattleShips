@@ -9,6 +9,26 @@ namespace BattleShips
 {
     internal class Field
     {
-        public char toChar() { return '#'; }
+        public bool shoted = false;
+        public bool isShip = false;
+        public Ship shipOver;
+        public int segmentIndex;
+        public char toChar() { 
+            if (!isShip)
+            {
+                if(shoted)
+                {
+                    return 'X';
+                }
+                else 
+                {
+                    return ' ';
+                }
+            }
+            else
+            {
+                return shipOver.segmentToChar(segmentIndex);
+            }
+        }
     }
 }
