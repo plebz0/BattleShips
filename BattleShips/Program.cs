@@ -12,10 +12,8 @@ namespace BattleShips
         static void Main(string[] args)
         {
             GameHandler GH = new GameHandler();
-            while(true) GH.RenderAttack();
 
-            
-            Console.ReadKey();
+            GH.start();          
         }
     }
 }

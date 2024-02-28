@@ -13,17 +13,17 @@ namespace BattleShips
         public void Render() {
 
             Console.WriteLine("   A|B|C|D|E|F|G|H|I|J|");
-            for (int i = 0; i < 10; i++)
+            for (int j = 0; j < 10; j++)
             {
-                if (i == 9)
+                if (j == 9)
                 {
-                    Console.Write((i + 1) + "|");
+                    Console.Write((j + 1) + "|");
                 }
                 else {
-                    Console.Write(" " + (i + 1) + "|");
+                    Console.Write(" " + (j + 1) + "|");
                 }
 
-                for (int j = 0; j < 10; j++)
+                for (int i = 0; i < 10; i++)
                 {
                     Console.Write(board[i, j].toChar() + "|");
                 }
@@ -45,15 +45,19 @@ namespace BattleShips
         {
             get { return board[x, y]; }
         }
-        public void mark( (int, int) spot )
+        public void markAround( (int, int) spot )
         { 
             for(int i = -1; i < 2; i++)
             {
                 for(int j = -1; j < 2; j++)
                 {
-                    board[spot.Item1 + i, spot.Item2 + j].shoted = true;
+                    if(spot.Item1 + i >= 0 && spot.Item1 + i < 10 && spot.Item2 + j >= 0 && spot.Item2 + j < 10)
+                        board[spot.Item1 + i, spot.Item2 + j].shoted = true;
                 }
             }
+        }
+        public void markMissed( int x ,int y) {
+            board[x, y ].shoted = true;
         }
     }
 }

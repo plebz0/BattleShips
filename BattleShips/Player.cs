@@ -16,13 +16,37 @@ namespace BattleShips
         }
 
         public string name = "";
+        public bool isAi = false;
         public BattleField bf = new BattleField();
         public Ship[] ships = { new Ship(4), new Ship(3), new Ship(3), new Ship(2), new Ship(2), new Ship(2), new Ship(1), new Ship(1), new Ship(1), new Ship(1), };
 
         public string SetName(string name)
         {
-            Console.WriteLine("Podaj imie: ");
             return name;
+        }
+
+        public bool PlaceInfo(int x, int y, string shipType) {
+            if(shipType == "1") {
+                if (bf[x, y].isShip) {
+                    Console.WriteLine("Niestety jest tu statek");
+                    return false;
+                } 
+                else {
+                    Console.WriteLine("Wstawianie statku");
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool isDefeated()    {
+            foreach (Ship ship in ships) {
+                if (!ship.isSinked()) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public ShotInfo getShot(int x, int y) {
