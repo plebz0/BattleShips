@@ -37,6 +37,26 @@ namespace BattleShips
             }
         }
 
+        public void RenderToUIForEnemy() 
+        {
+            for(int i = 0; i<holes; i++)
+            {
+                switch(segments[i])
+                {
+                    case SegmentState.DAMAGED:
+                    case SegmentState.FINE:
+                        Console.Write('#');
+                        break;
+                    case SegmentState.SINKED:
+                        Console.Write('o');
+                        break;
+                    default:
+                        Console.Write('E');
+                        break;
+                }
+            }
+        }
+
         public SegmentState this[int i]
         { 
             set { segments[i] = value; }
@@ -68,6 +88,21 @@ namespace BattleShips
             {
                 case SegmentState.FINE:
                     return '#';
+                case SegmentState.DAMAGED:
+                    return '%';
+                case SegmentState.SINKED:
+                    return 'o';
+                default:
+                    return 'E';
+                
+            }
+        }
+        public char segmentToCharForEnemy(int index)
+        {
+            switch(segments[index])
+            {
+                case SegmentState.FINE:
+                    return ' ';
                 case SegmentState.DAMAGED:
                     return '%';
                 case SegmentState.SINKED:

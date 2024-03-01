@@ -30,5 +30,22 @@ namespace BattleShips
                 return shipOver.segmentToChar(segmentIndex);
             }
         }
+         public char toCharForEnemy() { 
+            if (!isShip)
+            {
+                if(shoted)
+                {
+                    return 'X';
+                }
+                else 
+                {
+                    return ' ';
+                }
+            }
+            else
+            {
+                return shipOver.segmentToCharForEnemy(segmentIndex);
+            }
+        }
     }
 }

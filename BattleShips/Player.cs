@@ -10,35 +10,43 @@ namespace BattleShips
 {
     internal class Player
     {
+        static int[] templateShips = new int[] { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
+        
         public enum ShotInfo
         {
             MISSED, SINKED, HIT, RESHOOT
         }
 
         public string name = "";
-        public bool isAi = false;
+        public bool isAI = false;
+        public int wins = 0;
         public BattleField bf = new BattleField();
-        public Ship[] ships = { new Ship(4), new Ship(3), new Ship(3), new Ship(2), new Ship(2), new Ship(2), new Ship(1), new Ship(1), new Ship(1), new Ship(1), };
+
+        public Ship[] ships = new Ship[templateShips.Length];
+
+        public Player()
+        {
+            for(int i = 0; i < templateShips.Length; i++) {
+                ships[i] = new Ship(templateShips[i]);
+            }
+        }
 
         public string SetName(string name)
         {
             return name;
         }
 
-        public bool PlaceInfo(int x, int y, string shipType) {
-            if(shipType == "1") {
-                if (bf[x, y].isShip) {
-                    Console.WriteLine("Niestety jest tu statek");
-                    return false;
-                } 
-                else {
-                    Console.WriteLine("Wstawianie statku");
-                    return true;
-                }
+        public void resetShips()
+        {
+            for(int i = 0; i < templateShips.Length; i++) {
+                ships[i] = new Ship(templateShips[i]);
             }
-
-            return false;
         }
+
+        public void resetBattleField()
+        {
+            bf = new BattleField();
+        }   
 
         public bool isDefeated()    {
             foreach (Ship ship in ships) {
@@ -50,16 +58,19 @@ namespace BattleShips
         }
 
         public ShotInfo getShot(int x, int y) {
-            if (bf[x, y].shoted)
+            if (bf[x, y].shoted) // already shoted
             {
                 return ShotInfo.RESHOOT;
             }
-            else if (!(bf[x, y].isShip)) 
+            else if (!(bf[x, y].isShip))  // missed
             {
+                bf[x, y].shoted = true;
                 return ShotInfo.MISSED;
             }
-            else
+            else // hit
             {
+                bf[x, y].shoted = true;
+
                 Ship hitShip = bf[x, y].shipOver;
                 hitShip[bf[x, y].segmentIndex] = Ship.SegmentState.DAMAGED;
 

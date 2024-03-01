@@ -30,6 +30,26 @@ namespace BattleShips
                 Console.WriteLine("");
             }
         }
+        public void RenderForEnemy() {
+
+            Console.WriteLine("   A|B|C|D|E|F|G|H|I|J|");
+            for (int j = 0; j < 10; j++)
+            {
+                if (j == 9)
+                {
+                    Console.Write((j + 1) + "|");
+                }
+                else {
+                    Console.Write(" " + (j + 1) + "|");
+                }
+
+                for (int i = 0; i < 10; i++)
+                {
+                    Console.Write(board[i, j].toCharForEnemy() + "|");
+                }
+                Console.WriteLine("");
+            }
+        }
         public BattleField() {
             for (int i = 0; i < 10; i++)
             {
@@ -57,7 +77,7 @@ namespace BattleShips
             }
         }
         public void markMissed( int x ,int y) {
-            board[x, y ].shoted = true;
+            board[x, y].shoted = true;
         }
     }
 }

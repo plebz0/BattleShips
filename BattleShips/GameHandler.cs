@@ -14,13 +14,46 @@ namespace BattleShips {
             player2 = new Player();
         }
 
+        public void askRematch() {
+            Console.WriteLine($"{player1.name}: {player1.wins} wygranych");
+            Console.WriteLine($"{player2.name}: {player2.wins} wygranych");
+            Console.WriteLine("Czy chcesz zagrać ponownie? (T/N)");
+            ConsoleKeyInfo key = Console.ReadKey();
+            if (key.Key == ConsoleKey.T) {
+                setRematch();
+            } else {
+                return;
+            }
+        }
+
+        public void setRematch() {
+            player1.resetBattleField();
+            player1.resetShips();
+
+            player2.resetBattleField();
+            player2.resetShips();
+
+            PlaceShips(player1);
+
+            if(player2.isAI)
+            {
+                AiPlaceShips();
+            }
+            else
+            {
+                PlaceShips(player2);
+            }
+
+            StartBattle();
+        }
+
         public void start() {
             Console.Clear();
             Console.Write("\x1b[3J");
             int selection = 0;
             do
             {
-                Console.WriteLine($"BattleShipts by: Dawid\n");
+                Console.WriteLine($"BattleShips by: Dawid\n");
                 Console.WriteLine($"");
 
                 Console.WriteLine($" {(selection == 0 ? '>' : ' ')} Singleplayer");
@@ -50,7 +83,7 @@ namespace BattleShips {
                         case 2:
                             return;
                         default:
-                            Console.WriteLine("Unidentified selection?!?");
+                            Console.WriteLine("Nie możesz tak");
                         break;
                     }
                 } else if (key.Key == ConsoleKey.UpArrow || key.Key == ConsoleKey.W)
@@ -69,26 +102,43 @@ namespace BattleShips {
 
         public void setSingleplayer() 
         { 
-            Console.WriteLine("Singleplayer jeszcze nie wspierany lol");
-            return;
 
-            
             Console.Write("Imię Gracza: ");
             player1.name = Console.ReadLine();
+            player1.wins = 0;
+            player1.isAI = false;
+            player1.resetBattleField();
+            player1.resetShips();
+
             PlaceShips(player1);
 
             player2.name = "Komputer";
-            //player2.isAI = true;
-            //player2.AiShipPlace();
+            player2.wins = 0;
+            player2.isAI = true;
+            player2.resetBattleField();
+            player2.resetShips();
+
+            AiPlaceShips();
+
+            StartBattle();
         }
 
         public void setMultiplayer()
         { 
             Console.Write("Imię Gracza 1: ");
             player1.name = Console.ReadLine();
+            player1.wins = 0;
+            player1.isAI = false;
+            player1.resetBattleField();
+            player1.resetShips();
 
             Console.Write("Imię Gracza 2: ");
             player2.name = Console.ReadLine();
+            player2.wins = 0;
+            player2.isAI = false;
+            player2.resetBattleField();
+            player2.resetShips();
+
 
             PlaceShips(player1);
             PlaceShips(player2);
@@ -102,14 +152,24 @@ namespace BattleShips {
                 RenderAttack();
 
                 if (player1.isDefeated()) {
-                    Console.WriteLine("Gracz " + player2.name + " wygrywa!");
                     isWin = true;
                 } else if (player2.isDefeated()) {
-                    Console.WriteLine("Gracz " + player1.name + " wygrywa!");
                     isWin = true;
                 }
 
             } while (!isWin);
+
+            Console.Clear();
+            Console.Write("\x1b[3J");
+
+            Console.WriteLine("Koniec gry!");
+            Console.WriteLine($"{player1.name}: {player1.wins} wygranych");
+            Console.WriteLine($"{player2.name}: {player2.wins} wygranych");
+            Console.WriteLine("Nacisnij dowolny klawisz aby kontunuowac...");
+            Console.ReadKey();
+
+            Console.Clear();
+            Console.Write("\x1b[3J");
         }
 
         public void PlaceShips(Player activePlayer)
@@ -130,10 +190,12 @@ namespace BattleShips {
                     activePlayer.ships[i].cords[s] = (s, 0);
                 }
 
+
                 do
                 {
                     Console.Clear();
                     Console.Write("\x1b[3J");
+                    Console.WriteLine();
 
                     Console.WriteLine("   A|B|C|D|E|F|G|H|I|J|");
                     for(int ry = 0; ry < 10; ry++)
@@ -209,11 +271,16 @@ namespace BattleShips {
                                 {
                                     for(int ry = -1; ry < 2; ry++)
                                     {
-                                        if(x + rx >= 0 && x + rx < 10 && y + ry >= 0 && y + ry < 10)
+                                        if(x + rx >= 0 && x + (r == 0 ? s : 0) + rx< 10 && y + ry >= 0 && y + (r == 0 ? 0 : s) + ry < 10)
                                             if(activePlayer.bf[x + (r == 0 ? s : 0) + rx, y + (r == 0 ? 0 : s) + ry].isShip)
                                                 isOccupied = true;
                                     }
                                 }
+                            }
+                            if(isOccupied)
+                            {
+                                Console.WriteLine("Nie możesz postawić tutaj ststku!");
+                                continue;
                             }
                             correctPlacement = !isOccupied;
                             break;
@@ -237,35 +304,153 @@ namespace BattleShips {
             }
         }
 
-        public void RenderAttack() {
+        public void AiPlaceShips()
+        {
+            for(int i = 0; i < player2.ships.Length; i++)
+            {
+                bool correctPlacement = false;
+                int x = 0, y = 0, r = 0; // r=0 ----, r=1 |
+                
+                do
+                {
+                    Random random = new Random();
+
+                    r = random.Next(0, 2);
+                    if(r == 0)
+                    {
+                        x = random.Next(0, 10 - player2.ships[i].holes);
+                        y = random.Next(0, 10);
+                    } else
+                    {
+                        x = random.Next(0, 10);
+                        y = random.Next(0, 10 - player2.ships[i].holes);
+                    }
+
+                    bool isOccupied = false;
+                    for(int s = 0; s < player2.ships[i].holes; s++)
+                    {
+                        for(int rx = -1; rx < 2; rx++)
+                        {
+                            for(int ry = -1; ry < 2; ry++)
+                            {
+                                if(x + rx >= 0 && x + (r == 0 ? s : 0) + rx< 10 && y + ry >= 0 && y + (r == 0 ? 0 : s) + ry < 10)
+                                    if(player2.bf[x + (r == 0 ? s : 0) + rx, y + (r == 0 ? 0 : s) + ry].isShip)
+                                        isOccupied = true;
+                            }
+                        }
+                    }
+                    if(isOccupied)
+                    {
+                        continue;
+                    }
+
+                    for(int s = 0; s < player2.ships[i].holes; s++)
+                    {
+                        player2.ships[i].cords[s] = (x + (r == 0 ? s : 0), y + (r == 0 ? 0 : s));
+                    }
+
+                    correctPlacement = !isOccupied;
+
+                } while (!correctPlacement);
+                for(int s = 0; s < player2.ships[i].holes; s++)
+                {
+                    int rx = x + (r == 0 ? s : 0);
+                    int ry = y + (r == 0 ? 0 : s);
+                    player2.bf[rx, ry].isShip = true;
+                    player2.bf[rx, ry].shipOver = player2.ships[i];
+                    player2.bf[rx, ry].segmentIndex = s;
+                }
+            }
+        }
+
+        public void AiShoot()
+        {
+            while (true) {
+                Random random = new Random();
+                int x = random.Next(0, 10);
+                int y = random.Next(0, 10);
+
+                Player.ShotInfo si = player1.getShot(x, y);
+
+                if (si == Player.ShotInfo.MISSED) {
+                    break;
+                }
+
+                if (si == Player.ShotInfo.RESHOOT) {
+                    continue;
+                }
+
+                if (si == Player.ShotInfo.HIT) {
+                    continue;
+                }
+
+                if (si == Player.ShotInfo.SINKED) {
+
+                    Ship hitShip = player1.bf[x, y].shipOver;
+
+                    for (int i = 0; i < hitShip.holes; i++) {
+                        player1.bf.markAround(hitShip.cords[i]);
+                    }
+
+                    if (player1.isDefeated()) 
+                    {
+                        Console.WriteLine("Gracz " + player2.name + " wygrywa!");
+                        player2.wins++;
+                        askRematch();
+                        break;
+                    } else {
+                        continue;
+                    }
+                }
+            }
             Console.Clear();
             Console.Write("\x1b[3J");
+        }
 
+        public void RenderAttack() {
 
             Player ActivePlayer = (turn % 2 == 0 ? ref player1 : ref player2);
             Player EnemyPlayer = (turn % 2 == 1 ? ref player1 : ref player2);
-            // if ActivePlayer jest kiomputer AI(); turn++; return; 
 
-            //Console.WriteLine("Runda gracza " + ActivePlayer.name );
-            Console.WriteLine($"Runda gracza {ActivePlayer.name}");
-            Console.WriteLine();
-            Console.WriteLine($"Twoja plansza:");
-            ActivePlayer.bf.Render();
-            Console.Write($"Twoje Statki: ");
-            ActivePlayer.ships[0].RenderToUI();
-            for (int i = 1; i < ActivePlayer.ships.Length; i++) {
-                Console.Write(", ");
-                ActivePlayer.ships[i].RenderToUI();
+            if(ActivePlayer.isAI)
+            {
+                AiShoot();
+                turn++;
+                return;
             }
-            Console.WriteLine("");
-
-            Console.WriteLine();
-            Console.WriteLine($"Plansza Przeciwnika:");
-            EnemyPlayer.bf.Render();
-            Console.WriteLine("");
+            
+            Console.Clear();
+            Console.Write("\x1b[3J");
+            Console.WriteLine($"Runda gracza {ActivePlayer.name}");
 
             while (true) {
 
+                Console.WriteLine();
+                Console.WriteLine($"Twoja plansza:");
+                ActivePlayer.bf.Render();
+
+                Console.Write($"Twoje Statki: ");
+                ActivePlayer.ships[0].RenderToUI();
+                for (int i = 1; i < ActivePlayer.ships.Length; i++) {
+                    Console.Write(", ");
+                    ActivePlayer.ships[i].RenderToUI();
+                }
+                Console.WriteLine("");
+
+                Console.WriteLine();
+                Console.WriteLine($"Plansza Przeciwnika:");
+                EnemyPlayer.bf.RenderForEnemy();
+
+                Console.Write($"Statki Przeciwnika: ");
+                EnemyPlayer.ships[0].RenderToUIForEnemy();
+                for (int i = 1; i < EnemyPlayer.ships.Length; i++) {
+                    Console.Write(", ");
+                    EnemyPlayer.ships[i].RenderToUIForEnemy();
+                }
+                Console.WriteLine("");
+
+                
+                Console.WriteLine();
                 int x = 0;
                 int y = 0;
                 string inputx = " ";
@@ -322,14 +507,18 @@ namespace BattleShips {
 
                 Player.ShotInfo si = EnemyPlayer.getShot(x, y);
 
+                Console.Clear();
+                Console.Write("\x1b[3J");
+
                 if (si == Player.ShotInfo.MISSED) {
-                    Console.Clear();
-                    Console.WriteLine("\x1b[3J");
+
                     EnemyPlayer.bf.markMissed(x, y);
-                    Console.WriteLine("Pudlo, oddaj klawiature drugiemu graczowi!");
-                    
-                    Console.ReadKey();
                     turn++;
+                    Console.WriteLine("Pudlo, oddaj klawiature drugiemu graczowi!");
+
+                    if(EnemyPlayer.isAI) return;
+
+                    Console.ReadKey();
                     return;
                 }
 
@@ -344,12 +533,24 @@ namespace BattleShips {
                 }
 
                 if (si == Player.ShotInfo.SINKED) {
-                    Console.WriteLine("Trafiony Zatopiony! Strzelaj Dalej!");
+
                     Ship hitShip = EnemyPlayer.bf[x, y].shipOver;
+
                     for (int i = 0; i < hitShip.holes; i++) {
+                          
                         EnemyPlayer.bf.markAround(hitShip.cords[i]);
                     }
-                    continue;
+
+                    if (EnemyPlayer.isDefeated()) 
+                    {
+                        Console.WriteLine("Gracz " + ActivePlayer.name + " wygrywa!");
+                        ActivePlayer.wins++;
+                        askRematch();
+                        return;
+                    } else {
+                        Console.WriteLine("Trafiony zatopiony, strzelaj dalej!");
+                        continue;
+                    }
                 }
             }
 
