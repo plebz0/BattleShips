@@ -12,7 +12,6 @@ namespace BattleShips
         static void Main(string[] args)
         {
             GameHandler GH = new GameHandler();
-
             GH.start();          
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -53,12 +54,12 @@ namespace BattleShips {
             int selection = 0;
             do
             {
-                Console.WriteLine($"BattleShips by: Dawid\n");
+                Console.WriteLine($" Statki zrobione przez: Dawid\n");
                 Console.WriteLine($"");
 
-                Console.WriteLine($" {(selection == 0 ? '>' : ' ')} Singleplayer");
-                Console.WriteLine($" {(selection == 1 ? '>' : ' ')} Multiplater");
-                Console.WriteLine($" {(selection == 2 ? '>' : ' ')} Exit");
+                Console.WriteLine($" {(selection == 0 ? '>' : ' ')} Gracz vs Komputer");
+                Console.WriteLine($" {(selection == 1 ? '>' : ' ')} Gracz vs Gracz");
+                Console.WriteLine($" {(selection == 2 ? '>' : ' ')} Wyjscie");
 
                 ConsoleKeyInfo key = Console.ReadKey();
 
@@ -366,13 +367,50 @@ namespace BattleShips {
         public void AiShoot()
         {
             while (true) {
+                
                 Random random = new Random();
+                int goodShotx = -1;
+                int goodShoty = -1;
+                bool up = false;
+                bool down = false;
+                bool left = false;
+                bool right = false;
+                int r = random.Next(1, 4);
                 int x = random.Next(0, 10);
                 int y = random.Next(0, 10);
 
-                Player.ShotInfo si = player1.getShot(x, y);
+                if (goodShotx != -1 && goodShoty != -1)
+                {
+                    x = goodShotx;
+                    y = goodShoty;
+                    if (r == 1 && x != 0 )
+                    {
+                        x -= 1;
+                        up = true;
+                    }
+                    else if (r == 2 && x != 9)
+                    {
+                        x += 1;
+                        down = true;
+                    }
+                    else if (r == 3 && y != 0)
+                    {
+                        y -= 1;
+                        left = true;
+                    }
+                    else if (r == 4 && y != 9)
+                    {
+                        y += 1;
+                        right = true;
+                    }
 
+
+                }
+
+
+                Player.ShotInfo si = player1.getShot(x, y);
                 if (si == Player.ShotInfo.MISSED) {
+                    
                     break;
                 }
 
@@ -381,11 +419,19 @@ namespace BattleShips {
                 }
 
                 if (si == Player.ShotInfo.HIT) {
+                    goodShotx = x;
+                    goodShoty = y;
                     continue;
                 }
 
                 if (si == Player.ShotInfo.SINKED) {
-
+                    goodShotx = -1;
+                    goodShoty = -1;
+                  /*  up = false;
+                    down = false;
+                    left = false;
+                    right = false;
+*/
                     Ship hitShip = player1.bf[x, y].shipOver;
 
                     for (int i = 0; i < hitShip.holes; i++) {
@@ -460,7 +506,7 @@ namespace BattleShips {
                     Console.WriteLine(
                     "Podaj x (Litery)");
                     inputx = Console.ReadLine();
-                    if (inputx == "A" || inputx == "a") {
+                    if (inputx == "a" || inputx == "A") {
                         x = 0;
                     } else if (inputx == "b" || inputx == "B") {
                         x = 1;

@@ -1,0 +1,15 @@
+C:\Users\pc\source\repos\BattleShips\console clear\bin\Debug\net6.0\console clear.exe
+C:\Users\pc\source\repos\BattleShips\console clear\bin\Debug\net6.0\console clear.deps.json
+C:\Users\pc\source\repos\BattleShips\console clear\bin\Debug\net6.0\console clear.runtimeconfig.json
+C:\Users\pc\source\repos\BattleShips\console clear\bin\Debug\net6.0\console clear.dll
+C:\Users\pc\source\repos\BattleShips\console clear\bin\Debug\net6.0\console clear.pdb
+C:\Users\pc\source\repos\BattleShips\console clear\obj\Debug\net6.0\console clear.csproj.AssemblyReference.cache
+C:\Users\pc\source\repos\BattleShips\console clear\obj\Debug\net6.0\console clear.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pc\source\repos\BattleShips\console clear\obj\Debug\net6.0\console clear.AssemblyInfoInputs.cache
+C:\Users\pc\source\repos\BattleShips\console clear\obj\Debug\net6.0\console clear.AssemblyInfo.cs
+C:\Users\pc\source\repos\BattleShips\console clear\obj\Debug\net6.0\console clear.csproj.CoreCompileInputs.cache
+C:\Users\pc\source\repos\BattleShips\console clear\obj\Debug\net6.0\console clear.dll
+C:\Users\pc\source\repos\BattleShips\console clear\obj\Debug\net6.0\refint\console clear.dll
+C:\Users\pc\source\repos\BattleShips\console clear\obj\Debug\net6.0\console clear.pdb
+C:\Users\pc\source\repos\BattleShips\console clear\obj\Debug\net6.0\console clear.genruntimeconfig.cache
+C:\Users\pc\source\repos\BattleShips\console clear\obj\Debug\net6.0\ref\console clear.dll
