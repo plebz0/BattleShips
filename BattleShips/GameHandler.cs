@@ -310,7 +310,7 @@ namespace BattleShips {
             for(int i = 0; i < player2.ships.Length; i++)
             {
                 bool correctPlacement = false;
-                int x = 0, y = 0, r = 0; // r=0 ----, r=1 |
+                int x = 0, y = 0, r = 0; 
                 
                 do
                 {
@@ -371,10 +371,7 @@ namespace BattleShips {
                 Random random = new Random();
                 int goodShotx = -1;
                 int goodShoty = -1;
-                bool up = false;
-                bool down = false;
-                bool left = false;
-                bool right = false;
+               
                 int r = random.Next(1, 4);
                 int x = random.Next(0, 10);
                 int y = random.Next(0, 10);
@@ -386,22 +383,22 @@ namespace BattleShips {
                     if (r == 1 && x != 0 )
                     {
                         x -= 1;
-                        up = true;
+                       
                     }
                     else if (r == 2 && x != 9)
                     {
                         x += 1;
-                        down = true;
+                        
                     }
                     else if (r == 3 && y != 0)
                     {
                         y -= 1;
-                        left = true;
+                        
                     }
                     else if (r == 4 && y != 9)
                     {
                         y += 1;
-                        right = true;
+                        
                     }
 
 
